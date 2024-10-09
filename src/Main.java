@@ -7,15 +7,15 @@ public class Main
 {
   // static String server = "http://127.0.0.1:5000";
   static String server = "http://ole.informatik.uni-mannheim.de";
-  static String name   = "depthDynamic";
+  static String name   = "depthDynamic2";
 
 
   public static void main(String[] args) throws Exception
   {
     // System.out.println(load(server));
-    createGame();
+    // createGame();
     // openGames();
-    // joinGame("41");
+    joinGame("111");
   }
 
 

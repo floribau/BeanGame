@@ -16,9 +16,9 @@ public class Random
   public static void main(String[] args) throws Exception
   {
     // System.out.println(load(server));
-    // createGame();
+    createGame();
     // openGames();
-    joinGame("39");
+    // joinGame("85");
   }
 
 

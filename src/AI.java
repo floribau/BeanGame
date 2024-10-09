@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class AI {
 
@@ -13,7 +15,8 @@ public class AI {
       List<Integer> moves = generatePossibleMoves(state);
       System.out.println("Anzahl zu prüfender Moves: " + moves.size());
       int initialDepth = 10;
-      int depth = (int) Math.round(Math.log(60 / moves.size()) * initialDepth / 2.3);
+      int depth = (int) Math.round(Math.log(60.0 / moves.size()) * initialDepth / 2.3);
+
 
       // TODO order moves
       for (int i : moves) {
@@ -30,25 +33,22 @@ public class AI {
 
     public static float minimax(State state, int depth, float alpha, float beta, boolean maximizingPlayer,
         boolean redPlayer) {
-      List<Integer> moves = generatePossibleMoves(state);
+      Queue<State> moves = generatePossibleStates(state);
       if (moves.isEmpty()) {
         starvation(state);
       }
 
-      if (depth < 0 || moves.isEmpty() || state.getTreasuryRed() > 36 || state.getTreasuryBlue() > 36) {
+      if (depth < 0 || moves.isEmpty()  || state.getTreasuryRed() > 36 || state.getTreasuryBlue() > 36) {
         // negate score if blue player
         int sign = redPlayer ? 1 : -1;
         return sign * scoreState(state);
       }
 
-      // TODO order moves -> implement ordering function
       float resEval;
 
       if (maximizingPlayer) {
         float maxEval = Float.NEGATIVE_INFINITY;
-        for (int field : moves) {
-          State child = new State(state);
-          child.updateBoard(field);
+        for (State child : moves) {
           maxEval = Float.max(maxEval, minimax(child, depth - 1, alpha, beta, false, redPlayer));
           alpha = Float.max(alpha, maxEval);
           if (beta <= alpha) {
@@ -58,8 +58,7 @@ public class AI {
         resEval = maxEval;
       } else {
         float minEval = Float.POSITIVE_INFINITY;
-        for (int bucket : moves) {
-          State child = makeMove(state, bucket);
+        for (State child : moves) {
           minEval = Float.min(minEval, minimax(child, depth - 1, alpha, beta, true, redPlayer));
           beta = Float.min(beta, minEval);
           if (beta <= alpha) {
@@ -91,6 +90,32 @@ public class AI {
       return moves;
     }
 
+    public static Queue<State> generatePossibleStates(State state) {
+      Queue<State> moves = new PriorityQueue<>((o1, o2) -> {
+        if (o1.isRedTurn()) {
+          return o2.getTreasuryRed() - o1.getTreasuryRed();
+        } else {
+          return o2.getTreasuryBlue() - o1.getTreasuryBlue();
+        }
+      });
+      if (state.isRedTurn()) {
+        for (int i = 0; i < 6; i++) {
+          if (state.getBoard()[i] > 0) {
+           moves.add(makeMove(state, i));
+          }
+        }
+      }
+      else {
+        for (int i = 6; i < 12; i++) {
+          if (state.getBoard()[i] > 0) {
+            moves.add(makeMove(state, i));
+          }
+        }
+      }
+
+      return moves;
+    }
+
     public static float scoreState(State state) {
       // state scored from red player's perspective
       if (state.getTreasuryRed() > 36) {
@@ -107,7 +132,7 @@ public class AI {
         int value = board[i];
         if (value == 1 || value == 3 || value == 5) {
           int weight = (state.isRedTurn() && i > 0 && i < 7 || !state.isRedTurn() && (i == 0 || i >= 7) ) ? 2 : 1;
-          score += weight * sign * 0.03 * i;
+          score += weight * sign * 0.1 * i;
         }
       }
 
