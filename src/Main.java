@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Scanner;
 
 
 public class Main
@@ -12,10 +13,25 @@ public class Main
 
   public static void main(String[] args) throws Exception
   {
-    // System.out.println(load(server));
-    // createGame();
-    // openGames();
-    joinGame("111");
+      while (true) {
+          System.out.println("Enter create or join (1,2): ");
+          Scanner scanner = new Scanner(System.in);
+          String output = scanner.nextLine();
+          switch (output) {
+              case "1":
+                  createGame();
+                  break;
+              case "2":
+                  openGames();
+                  System.out.println("Enter gameID: ");
+                  String gameID = scanner.nextLine();
+                  joinGame(gameID);
+                  break;
+              default:
+                  System.out.println("Invalid input");
+                  break;
+          }
+      }
   }
 
 
