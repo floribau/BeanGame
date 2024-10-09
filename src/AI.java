@@ -106,7 +106,7 @@ public class AI {
       for (int i=0; i < board.length; i++) {
         int value = board[i];
         if (value == 1 || value == 3 || value == 5) {
-          int weight = (state.isRedTurn() && i < 6 || !state.isRedTurn() && i >= 6) ? 2 : 1;
+          int weight = (state.isRedTurn() && i > 0 && i < 7 || !state.isRedTurn() && (i == 0 || i >= 7) ) ? 2 : 1;
           score += weight * sign * 0.03 * i;
         }
       }
