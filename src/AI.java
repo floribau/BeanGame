@@ -14,7 +14,7 @@ public class AI {
 
       List<Integer> moves = generatePossibleMoves(state);
       System.out.println("Anzahl zu prüfender Moves: " + moves.size());
-      int initialDepth = 10;
+      int initialDepth = 8;
       int depth = (int) Math.round(Math.log(60.0 / moves.size()) * initialDepth / 2.3);
 
 

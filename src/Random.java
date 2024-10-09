@@ -101,7 +101,7 @@ public class Random
           // System.out.println("\t-> " + selectField );
         } while(board[selectField] == 0);
 
-        board = updateBoard(board, selectField);
+        updateBoard(board, selectField);
         System.out.println("Wï¿½hle Feld: " + (selectField + 1) + " /\t" + p1 + " - " + p2);
         System.out.println(printBoard(board) + "\n\n");
 
