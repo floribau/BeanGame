@@ -14,7 +14,7 @@ public class AI {
       Map<State, Integer> moves = generatePossibleMoves(state);
       System.out.println("Anzahl zu prüfender Moves: " + moves.size());
       int initialDepth = 3;
-      int depth = (int) Math.round(Math.log(60 / moves.size()) * initialDepth / 2.3);
+      int depth = (int) Math.round(Math.log((double) 60 / moves.size()) * initialDepth / 2.3);
 
       // TODO order moves
       for (State child : moves.keySet()) {
@@ -47,8 +47,6 @@ public class AI {
       if (maximizingPlayer) {
         float maxEval = Float.NEGATIVE_INFINITY;
         for (State child : moves.keySet()) {
-          // State child = new State(state);
-          // child.updateBoard(field);
           maxEval = Float.max(maxEval, minimax(child, depth - 1, alpha, beta, false, redPlayer));
           alpha = Float.max(alpha, maxEval);
           if (beta <= alpha) {
@@ -59,7 +57,6 @@ public class AI {
       } else {
         float minEval = Float.POSITIVE_INFINITY;
         for (State child : moves.keySet()) {
-          // State child = makeMove(state, bucket);
           minEval = Float.min(minEval, minimax(child, depth - 1, alpha, beta, true, redPlayer));
           beta = Float.min(beta, minEval);
           if (beta <= alpha) {
@@ -116,7 +113,7 @@ public class AI {
         int value = board[i];
         if (value == 1 || value == 3 || value == 5) {
           int weight = (state.isRedTurn() && i > 0 && i < 7 || !state.isRedTurn() && (i == 0 || i >= 7) ) ? 2 : 1;
-          score += weight * sign * 0.03 * i;
+          score += (float) (weight * sign * 0.03 * i);
         }
       }
 
