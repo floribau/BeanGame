@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class AI {
 
@@ -9,19 +11,17 @@ public class AI {
       float alpha = Float.NEGATIVE_INFINITY;
       float beta = Float.POSITIVE_INFINITY;
 
-
-      List<Integer> moves = generatePossibleMoves(state);
+      Map<State, Integer> moves = generatePossibleMoves(state);
       System.out.println("Anzahl zu prüfender Moves: " + moves.size());
-      int initialDepth = 10;
+      int initialDepth = 3;
       int depth = (int) Math.round(Math.log(60 / moves.size()) * initialDepth / 2.3);
 
       // TODO order moves
-      for (int i : moves) {
-        State child = makeMove(state, i);
+      for (State child : moves.keySet()) {
         float eval = minimax(child, depth, alpha, beta, false, redPlayer);
         if (eval > maxEval) {
           maxEval = eval;
-          bestMove = i;
+          bestMove = moves.get(child);
         }
       }
 
@@ -30,8 +30,8 @@ public class AI {
 
     public static float minimax(State state, int depth, float alpha, float beta, boolean maximizingPlayer,
         boolean redPlayer) {
-      List<Integer> moves = generatePossibleMoves(state);
-      if (moves.isEmpty()) {
+      Map<State, Integer> moves = generatePossibleMoves(state);
+      if (moves.keySet().isEmpty()) {
         starvation(state);
       }
 
@@ -46,9 +46,9 @@ public class AI {
 
       if (maximizingPlayer) {
         float maxEval = Float.NEGATIVE_INFINITY;
-        for (int field : moves) {
-          State child = new State(state);
-          child.updateBoard(field);
+        for (State child : moves.keySet()) {
+          // State child = new State(state);
+          // child.updateBoard(field);
           maxEval = Float.max(maxEval, minimax(child, depth - 1, alpha, beta, false, redPlayer));
           alpha = Float.max(alpha, maxEval);
           if (beta <= alpha) {
@@ -58,8 +58,8 @@ public class AI {
         resEval = maxEval;
       } else {
         float minEval = Float.POSITIVE_INFINITY;
-        for (int bucket : moves) {
-          State child = makeMove(state, bucket);
+        for (State child : moves.keySet()) {
+          // State child = makeMove(state, bucket);
           minEval = Float.min(minEval, minimax(child, depth - 1, alpha, beta, true, redPlayer));
           beta = Float.min(beta, minEval);
           if (beta <= alpha) {
@@ -71,19 +71,28 @@ public class AI {
       return resEval;
     }
 
-    public static List<Integer> generatePossibleMoves(State state) {
-      List<Integer> moves = new ArrayList<>();
-      if (state.isRedTurn()) {
+    public static Map<State, Integer> generatePossibleMoves(State parent) {
+      TreeMap<State, Integer> moves = new TreeMap<>((o1, o2) -> {
+        int sign = o1.isRedTurn() ? 1 : -1;
+        float score1 = sign * scoreState(o1);
+        float score2 = sign * scoreState(o2);
+        if (score1 == score2) {
+          return 0;
+        }
+        return score1 > score2 ? -1 : 1;
+      });
+      if (parent.isRedTurn()) {
         for (int i = 0; i < 6; i++) {
-          if (state.getBoard()[i] > 0) {
-            moves.add(i);
+          if (parent.getBoard()[i] > 0) {
+            State state = makeMove(parent, i);
+            moves.put(state, i);
           }
         }
       }
       else {
         for (int i = 6; i < 12; i++) {
-          if (state.getBoard()[i] > 0) {
-            moves.add(i);
+          if (parent.getBoard()[i] > 0) {
+            moves.put(makeMove(parent, i), i);
           }
         }
       }
@@ -157,7 +166,7 @@ public class AI {
       }
     }
 
-    public static void orderMoves(State state, List<State> moves) {
+    public static void orderMoves(State state, List<Integer> moves) {
 
     }
 }
