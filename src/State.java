@@ -110,7 +110,7 @@ public class State {
           treasuryBlue += board[field];
         }
         board[field] = 0;
-        field = (field == 0) ? field = 11 : --field;
+        field = (field == 0) ? 11 : --field;
       } while (board[field] == 2 || board[field] == 4 || board[field] == 6);
     }
 

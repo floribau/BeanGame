@@ -17,8 +17,6 @@ public class AI {
       int initialDepth = 8;
       int depth = (int) Math.round(Math.log(60.0 / moves.size()) * initialDepth / 2.3);
 
-
-      // TODO order moves
       for (int i : moves) {
         State child = makeMove(state, i);
         float eval = minimax(child, depth, alpha, beta, false, redPlayer);
@@ -180,9 +178,5 @@ public class AI {
       } else {
         state.setTreasuryRed(state.getTreasuryRed() + value);
       }
-    }
-
-    public static void orderMoves(State state, List<State> moves) {
-
     }
 }
